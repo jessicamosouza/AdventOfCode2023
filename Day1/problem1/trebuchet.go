@@ -3,69 +3,66 @@ package problem1
 import (
 	"bufio"
 	"fmt"
-	"log"
 	"os"
 	"strconv"
 	"unicode"
 )
 
-func Trebuchet() int {
+func Trebuchet() (int, error) {
 	var sum int
 
-	values := getValuesFromInputFile()
+	values, err := getValuesFromInputFile()
+	if err != nil {
+		return 0, err
+	}
 
 	for _, value := range values {
-		sum += getNum(value)
+		num, _ := getNum(value)
+		sum += num
 	}
 
-	return sum
+	return sum, nil
 }
 
-func getNum(value string) int {
-	var first, last = -1, 0
-	var num2 []int
-	
+func getNum(value string) (int, error) {
+	var digits []int
 	for _, char := range value {
-		if !unicode.IsDigit(char) {
-			continue
+		if unicode.IsDigit(char) {
+			num, err := strconv.Atoi(string(char))
+			if err != nil {
+				return 0, err
+			}
+			digits = append(digits, num)
 		}
-
-		num, err := strconv.Atoi(string(char))
-		if err != nil {
-			log.Println(err)
-		}
-
-		num2 = append(num2, num)
-
-		if first == -1 {
-			first = num2[0]
-			continue
-		}
-
-		last = num
+	}
+	if len(digits) == 0 {
+		return 0, fmt.Errorf("no digits found in string")
+	}
+	if len(digits) == 1 {
+		digits = append(digits, digits[0])
 	}
 
-	if len(num2) == 1 {
-		last = first
-	}
-
-	numStr := fmt.Sprintf("%d%d", first, last)
-	num, _ := strconv.Atoi(numStr)
-
-	return num
+	numStr := fmt.Sprintf("%d%d", digits[0], digits[len(digits)-1])
+	return strconv.Atoi(numStr)
 }
 
-func getValuesFromInputFile() []string {
+func getValuesFromInputFile() ([]string, error) {
 	file, err := os.Open("input.txt")
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
+	defer file.Close()
 
 	var values []string
 	scanner := bufio.NewScanner(file)
+
 	for scanner.Scan() {
 		values = append(values, scanner.Text())
 	}
 
-	return values
+	if err := scanner.Err(); err != nil {
+		return nil, err
+	}
+
+	return values, nil
 }
