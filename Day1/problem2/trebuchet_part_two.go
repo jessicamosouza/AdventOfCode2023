@@ -66,7 +66,7 @@ func getLastNumber(value string) int {
 	var word string
 	for i := len(value) - 1; i >= 0; i-- {
 		word = string(value[i]) + word
-		for w, _ := range numbersWords {
+		for w := range numbersWords {
 			if strings.Contains(word, w) {
 				return numbersWords[w]
 			}
@@ -85,7 +85,7 @@ func getFirtNumber(value string) int {
 	var word string
 	for i := 0; i < len(value); i++ {
 		word += string(value[i])
-		for w, _ := range numbersWords {
+		for w := range numbersWords {
 			if strings.Contains(word, w) {
 				return numbersWords[w]
 			}
