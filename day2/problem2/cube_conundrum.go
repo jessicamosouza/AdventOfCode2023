@@ -2,7 +2,6 @@ package problem1
 
 import (
 	"bufio"
-	"fmt"
 	"os"
 	"regexp"
 	"strconv"
@@ -10,51 +9,46 @@ import (
 )
 
 var cubes = map[string]int{
-	"red":   12,
-	"green": 13,
-	"blue":  14,
+	"red":   0,
+	"green": 0,
+	"blue":  0,
 }
 
 var gameData = make(map[string][]map[string]int)
+var powerSum int
 
-func CubeConundrum() int {
+func CubeConundrumTwo() int {
 	convertToMap()
 
-	var sum int
-	for gameNumber, turns := range gameData {
-		if isValidGame(turns) {
-			if gameNum, err := extractGameNumber(gameNumber); err == nil {
-				sum += gameNum
-			}
+	for _, turns := range gameData {
+		for _, turn := range turns {
+			getNumCubes(turn)
 		}
+		calculateFinal()
+
+		clearMap()
 	}
-	return sum
+
+	return powerSum
 }
 
-func isValidGame(turns []map[string]int) bool {
-	for _, turn := range turns {
-		if !isValidTurn(turn) {
-			return false
-		}
-	}
-	return true
+func calculateFinal() {
+	power := cubes["red"] * cubes["blue"] * cubes["green"]
+	powerSum += power
 }
 
-func isValidTurn(turn map[string]int) bool {
-	for color, count := range turn {
-		if count > cubes[color] {
-			return false
-		}
-	}
-	return true
+func clearMap() {
+	cubes["red"] = 0
+	cubes["blue"] = 0
+	cubes["green"] = 0
 }
 
-func extractGameNumber(gameNumber string) (int, error) {
-	parts := strings.Split(gameNumber, " ")
-	if len(parts) != 2 {
-		return 0, fmt.Errorf("invalid game number format")
+func getNumCubes(turn map[string]int) {
+	for color, value := range turn {
+		if value > cubes[color] {
+			cubes[color] = value
+		}
 	}
-	return strconv.Atoi(parts[1])
 }
 
 func convertToMap() {

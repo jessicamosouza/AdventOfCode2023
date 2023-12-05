@@ -5,9 +5,9 @@ import (
 	"testing"
 )
 
-func TestCubeConundrum(t *testing.T) {
+func TestCubeConundrumTwo(t *testing.T) {
 	t.Run("get result right", func(t *testing.T) {
-		resp := CubeConundrum()
-		require.Equal(t, 2551, resp)
+		resp := CubeConundrumTwo()
+		require.Equal(t, 62811, resp)
 	})
 }
